@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ndukuh Website Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-image: url('ndukuhtech.jpg');
+            padding-top: 12px;
+            padding-bottom: 12px;
+            margin-top: -3.5vh;
+            margin-left: -5vh;
+            margin-right: -3vh;
+            border-bottom: 3px solid #6e19d7;
+        }
+
+        body {
+            background-image: url('ndukuhtech.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* ===== TOMBOL WHATSAPP ===== */
+        .btn-whatsapp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 16px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 80%;
+            max-width: 500px;
+            margin: 20px auto 40px;
+            text-decoration: none;
+            box-shadow: 0 0 30px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-whatsapp:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(37, 211, 102, 0.6);
+        }
+
+        .btn-whatsapp .icon {
+            font-size: 1.2rem;
+        }
+
+        /* ===== GRID PRODUK ===== */
+        .produk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* ===== KARTU PRODUK (MEMANJANG KE BAWAH) ===== */
+        .produk-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            
+            /* 🔧 Dihapus aspect-ratio & max-height agar memanjang natural */
+        }
+
+        .produk-card:hover {
+            transform: translateY(-8px);
+            border-color: #9b59b6;
+            box-shadow: 0 0 25px rgba(155, 89, 182, 0.5);
+        }
+
+        .produk-card:active {
+            transform: scale(0.97);
+        }
+
+        .produk-card .card-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .produk-card .card-body {
+            padding: 18px;
+        }
+
+        /* 🔧 Judul wrap natural, tidak dipotong */
+        .produk-card .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .produk-card .card-bronze {
+            display: inline-block;
+            background: linear-gradient(135deg, #cd7f32, #8b4513);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .produk-card .card-pendidikan {
+            display: inline-block;
+            background: linear-gradient(135deg, #57cd32, #138b19);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+      
+        .produk-card .card-fitur {
+            font-size: 10px;
+            font-weight: 800;
+            color: #8f8f8f;
+            margin-bottom: 6px;
+        }
+
+        .produk-card .card-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #1a1a1a;
+        }
+
+        .produk-card .card-price span {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        /* ===== POPUP / MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            padding: 15px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border: 2px solid #9b59b6;
+            border-radius: 20px;
+            padding: 20px 18px;
+            max-width: 360px;
+            width: 95%;
+            text-align: center;
+            position: relative;
+            box-shadow:
+                0 0 20px rgba(155, 89, 182, 0.4),
+                0 0 60px rgba(155, 89, 182, 0.2);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-content .modal-image {
+            width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .modal-content .modal-bronze {
+            display: inline-block;
+            background: linear-gradient(135deg, #cd7f32, #8b4513);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(205, 127, 50, 0.5);
+        }
+
+        .modal-content .modal-pendidikan {
+            display: inline-block;
+            background: linear-gradient(135deg, #57cd32, #138b19);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(87, 205, 50, 0.5);
+        }
+
+        .modal-content .modal-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .modal-content .modal-fitur {
+            font-size: 12px;
+            font-weight: 800;
+            color: #b0b0b0;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-content .modal-price {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #e0e0e0;
+            margin-bottom: 15px;
+        }
+
+        .modal-content .btn-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+            margin-top: 5px;
+        }
+
+        .modal-content .btn-pesan {
+            display: inline-block;
+            background: #9b59b6;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 10px 22px;
+            border: 2px solid #9b59b6;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(155, 89, 182, 0.5), 0 0 30px rgba(155, 89, 182, 0.3);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+            flex: 1;
+            max-width: 140px;
+            text-align: center;
+        }
+
+        .modal-content .btn-pesan:hover {
+            background: transparent;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(155, 89, 182, 0.8), 0 0 50px rgba(155, 89, 182, 0.5), inset 0 0 15px rgba(155, 89, 182, 0.3);
+            transform: scale(1.05);
+        }
+
+        .modal-content .btn-batal {
+            display: inline-block;
+            background: #000;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 10px 22px;
+            border: 2px solid #9b59b6;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(155, 89, 182, 0.3);
+            flex: 1;
+            max-width: 140px;
+            text-align: center;
+        }
+
+        .modal-content .btn-batal:hover {
+            background: #9b59b6;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(155, 89, 182, 0.8), 0 0 50px rgba(155, 89, 182, 0.5);
+            transform: scale(1.05);
+        }
+
+        .modal-content .btn-close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.6rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            line-height: 1;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content .btn-close:hover {
+            color: #9b59b6;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .produk-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+
+            .produk-card .card-image {
+                height: 160px;
+            }
+
+            .produk-card .card-body {
+                padding: 12px;
+            }
+
+            .produk-card .card-title {
+                font-size: 0.95rem;
+            }
+
+            .produk-card .card-fitur {
+                font-size: 11px;
+            }
+
+            .produk-card .card-price {
+                font-size: 1.1rem;
+            }
+
+            .modal-content {
+                padding: 16px 14px;
+                max-width: 320px;
+            }
+
+            .modal-content .modal-image {
+                max-height: 130px;
+            }
+
+            .modal-content .modal-title {
+                font-size: 1.05rem;
+            }
+
+            .modal-content .modal-price {
+                font-size: 1.25rem;
+            }
+
+            .modal-content .btn-pesan,
+            .modal-content .btn-batal {
+                padding: 9px 16px;
+                font-size: 0.85rem;
+                max-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 style="color:#fff; font-weight: 900; font-size: 18px; text-align:left; margin-left: 40px; text-shadow:
+        0px 2px 0 #9246f0, 0px -2px 0 #9246f0, 2px 0px 0 #9246f0, -2px 0px 0 #9246f0,
+        2px 2px 0 #9246f0, 2px -2px 0 #9246f0, -2px 2px 0 #9246f0, -2px -2px 0 #9246f0;">
+            Ndukuh Website Development
+        </h1>
+        <h2 style="color:#fff; font-weight:bold; font-size:12px; text-align:left; margin-left:40px; text-shadow:
+        0px 2px 0 #000, 0px -2px 0 #000, 2px 2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, -2px -2px 0 #000;">
+            Build Your Digital Future
+        </h2>
+    </header>
+
+    <a href="https://wa.me/62895417139248" class="btn-whatsapp" target="_blank">
+        <span class="icon">📱</span>
+        Whatsapp
+    </a>
+
+    <div class="produk-grid">
+
+        <!-- Produk 1 -->
+        <div class="produk-card"
+             onclick="openModal('Paket Website Builder Basic', 'Rp 100.000 - 153.000', 'Bronze', 'modal-bronze', 'HTML, CSS, JAVASCRIPT', 'paketbronze.png')">
+            <img src="paketbronze.png" class="card-image" alt="Paket Bronze">
+            <div class="card-body">
+                <div class="card-title">Paket Website Builder Basic</div>
+                <span class="card-bronze">Bronze</span>
+                <div class="card-fitur">HTML, CSS, JAVASCRIPT</div>
+                <div class="card-price"><span>Rp</span> 100.000 - 153.000</div>
+            </div>
+        </div>
+
+        <!-- Produk 2 -->
+        <div class="produk-card"
+             onclick="openModal('Paket Website Pendidikan', 'Rp 100.000 - 153.000', 'Education', 'modal-pendidikan', 'HTML, CSS, JAVASCRIPT', 'paketpendidikan.png')">
+            <img src="paketpendidikan.png" class="card-image" alt="Paket Pendidikan">
+            <div class="card-body">
+                <div class="card-title">Paket Website Pendidikan</div>
+                <span class="card-pendidikan">Education</span>
+                <div class="card-fitur">HTML, CSS, JAVASCRIPT</div>
+                <div class="card-price"><span>Rp</span> 100.000 - 153.000</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal Popup -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+        <div class="modal-content">
+            <button class="btn-close" onclick="closeModal()">&times;</button>
+            <img src="" class="modal-image" id="modalImage" alt="Produk">
+            <span class="modal-bronze" id="modalCategory">Bronze</span>
+            <div class="modal-title" id="modalTitle">Nama Produk</div>
+            <div class="modal-fitur" id="modalFitur">HTML, CSS, JAVASCRIPT</div>
+            <div class="modal-price" id="modalPrice">Rp 0</div>
+            <div class="btn-wrapper">
+                <a href="#" class="btn-pesan" id="btnPesan" target="_blank">Pesan</a>
+                <button class="btn-batal" onclick="closeModal()">Batalkan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const NOMOR_WA = '62895417139248';
+
+        function openModal(nama, harga, labelKategori, classKategori, fitur, gambar) {
+            document.getElementById('modalTitle').textContent = nama;
+            document.getElementById('modalPrice').textContent = harga;
+            document.getElementById('modalFitur').textContent = fitur;
+            
+            const catEl = document.getElementById('modalCategory');
+            catEl.textContent = labelKategori;
+            catEl.className = classKategori;
+            
+            document.getElementById('modalImage').src = gambar;
+
+            const pesan = `Halo Ndukuh Developer, saya ingin memesan:\n\n` +
+                          `📦 Produk: ${nama}\n` +
+                          `🏷️ Kategori: ${labelKategori}\n` +
+                          `⚙️ Fitur: ${fitur}\n` +
+                          `💰 Harga: ${harga}\n\n` +
+                          `Mohon info lebih lanjut. Terima kasih!`;
+
+            document.getElementById('btnPesan').href =
+                `https://wa.me/${NOMOR_WA}?text=${encodeURIComponent(pesan)}`;
+
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeModalOutside(event) {
+            if (event.target === document.getElementById('modalOverlay')) {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+
+</body>
+</html>
